@@ -4,8 +4,9 @@ import MovieDetails from "./MovieDetails";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { FaSpinner } from "react-icons/fa";
 
-export default function MainContainer({ tempMovies }) {
+export default function MainContainer({ tempMovies, isLoading, fetchError }) {
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [desktopVersion, setDesktopVersion] = useState(function () {
     let width = window.innerWidth;
@@ -66,40 +67,51 @@ export default function MainContainer({ tempMovies }) {
       {/* <div className="flex flex-wrap items-start justify-start gap-8 p-4 "></div> */}
       <div
         className={
-          selectedMovie
+          selectedMovie && !desktopVersion
             ? "mx-8 h-full p-4 sm:mx-[15%] sm:w-[70%]"
-            : "flex h-full flex-wrap justify-start gap-8 p-8 "
+            : "flex h-full flex-row flex-wrap justify-center gap-8  p-8 sm:mx-[15%] sm:w-[70%] lg:mx-[0%] lg:w-full lg:flex-col lg:items-center lg:gap-4 lg:p-4"
         }
       >
-        {!desktopVersion ? (
-          <>
-            {selectedMovie ? (
-              <Slider className="lg:hidden" {...settings}>
-                {tempMovies.map((movie, i) => (
+        {isLoading && <Loader />}
+        {!isLoading &&
+          !fetchError &&
+          (!desktopVersion ? (
+            <>
+              {selectedMovie ? (
+                <Slider className="lg:hidden" {...settings}>
+                  {tempMovies.map((movie, i) => (
+                    <Movies
+                      movie={movie}
+                      selectedMovie={selectedMovie}
+                      setSelectedMovie={setSelectedMovie}
+                      key={i}
+                    />
+                  ))}
+                </Slider>
+              ) : (
+                tempMovies.map((movie, i) => (
                   <Movies
                     movie={movie}
                     selectedMovie={selectedMovie}
                     setSelectedMovie={setSelectedMovie}
                     key={i}
                   />
-                ))}
-              </Slider>
-            ) : (
-              tempMovies.map((movie, i) => (
+                ))
+              )}
+            </>
+          ) : (
+            <>
+              {tempMovies.map((movie, i) => (
                 <Movies
                   movie={movie}
                   selectedMovie={selectedMovie}
                   setSelectedMovie={setSelectedMovie}
                   key={i}
                 />
-              ))
-            )}
-          </>
-        ) : (
-          <>
-            <h2>For desktop version</h2>
-          </>
-        )}
+              ))}
+            </>
+          ))}
+        {fetchError && <ErrorMessage message={fetchError} />}
 
         {/* Movie lists */}
 
@@ -118,6 +130,22 @@ export default function MainContainer({ tempMovies }) {
           />
         )}
       </div>
+    </div>
+  );
+}
+
+function Loader() {
+  return (
+    <div className="flex justify-center">
+      <FaSpinner />
+    </div>
+  );
+}
+
+function ErrorMessage({ message }) {
+  return (
+    <div className="flex justify-center">
+      <span>⛔</span> {message}
     </div>
   );
 }

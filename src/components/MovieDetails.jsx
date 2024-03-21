@@ -8,8 +8,8 @@ export default function MovieDetails({ selectedMovie, setSelectedMovie }) {
     <div
       className={
         selectedMovie
-          ? "relative  flex flex-col  p-2 transition-all duration-500 sm:mx-8 md:mx-16"
-          : "hidden transition-all duration-500 lg:flex"
+          ? "relative  flex h-full  flex-col bg-purple-300 p-2 transition-all duration-500 sm:mx-8 md:mx-16"
+          : "hidden bg-purple-300 transition-all duration-500 lg:flex"
       }
     >
       <button
